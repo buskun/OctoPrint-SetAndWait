@@ -6,7 +6,7 @@ import setuptools
 plugin_identifier = "setandwait"
 plugin_package = "octoprint_%s" % plugin_identifier
 plugin_name = "OctoPrint-SetAndWait"
-plugin_version = "0.0.1"
+plugin_version = "0.0.2"
 plugin_description = "Re-implements Set And Wait commands"
 plugin_author = "Shawn Bruce"
 plugin_author_email = "kantlivelong@gmail.com"
