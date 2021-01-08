@@ -15,7 +15,9 @@ class SetAndWait(octoprint.plugin.EventHandlerPlugin):
 
     def __init__(self):
         self._events = dict(M109=threading.Event(),
-                            M190=threading.Event())
+                            M190=threading.Event(),
+                            M191=threading.Event()
+                            )
 
     def _poll_temperature_bypass_queue(self):
         # Adapted from octoprint.util.comm._poll_temperature
@@ -45,6 +47,10 @@ class SetAndWait(octoprint.plugin.EventHandlerPlugin):
             gcode_to = 'M140'
             heater_type = 'bed'
             heater_identifier = 'Bed'
+        elif gcode_from == 'M191':
+            gcode_to = 'M141'
+            heater_type = 'chamber'
+            heater_identifier = 'Chamber'
         else:
             return
 
@@ -104,10 +110,10 @@ class SetAndWait(octoprint.plugin.EventHandlerPlugin):
         self._printer._comm._do_send(line)
 
     def hook_gcode_sending(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
-        if gcode not in ['M104', 'M109', 'M140', 'M190']:
+        if gcode not in ['M104', 'M109', 'M140', 'M141', 'M190', 'M191']:
             return
 
-        if gcode in ['M109', 'M190']:
+        if gcode in ['M109', 'M190', 'M191']:
             if not self._printer.is_cancelling():
                 self._printer.set_job_on_hold(True, blocking=False)
                 self._gcode_setandwait(cmd)
